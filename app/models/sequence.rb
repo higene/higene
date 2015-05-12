@@ -1,5 +1,6 @@
 class Sequence
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :name, type: String
   fieed :description, type: String
@@ -14,6 +15,7 @@ end
 
 class Annotation
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :source, type: String
   field :feature, type: String
@@ -22,12 +24,13 @@ class Annotation
   field :score, type: Float
   field :strand, type: String
   field :frame, type: Integer
-  embeds_many :attributes
+  embeds_one :attribute
   embedded_in :sequence
 end
 
 class Attribute
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :gene_id, type: String
   field :transcript_id, type: String
@@ -36,6 +39,7 @@ end
 
 class Expression
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :condition, type: String
   field :source, type: String
@@ -46,6 +50,7 @@ end
 
 class Fpkm
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :value, type: Float
   belongs_to :expression
@@ -53,6 +58,7 @@ end
 
 class Rpkm
   include Mongoid::Document
+  include Mongoid::Timestamps
 
   field :value, type: Float
   belongs_to :expression

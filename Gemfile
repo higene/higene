@@ -33,7 +33,10 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # gem 'capistrano-rails', group: :development
 
 # Ruby ODM framework for MongoDB
-gem "mongoid", "~> 4.0.0"
+gem 'mongoid', '~> 4.0.0'
+
+# Flexible authentication solution for Rails with Warden
+gem 'devise', '3.4.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
