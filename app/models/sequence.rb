@@ -1,65 +1,39 @@
+require 'workspace'
+require 'alignment'
+
 class Sequence
   include Mongoid::Document
   include Mongoid::Timestamps
 
   field :name, type: String
-  fieed :description, type: String
+  field :feature, type: String
   field :sequence, type: String
   field :taxid, type: Integer
-  embeds_many :annotations
-  embeds_many :expressions
-  has_many :collections, as: :parents
-  has_many :users, as: :owners
+
+  embeds_many :locations
+  embeds_many :resoueces
+  belongs_to :workspace
   belongs_to :subject
+  belongs_to :location
 end
 
-class Annotation
+class Location
   include Mongoid::Document
-  include Mongoid::Timestamps
 
   field :source, type: String
-  field :feature, type: String
   field :start, type: Integer
   field :end, type: Integer
-  field :score, type: Float
-  field :strand, type: String
+  field :strand, type: Integer
   field :frame, type: Integer
-  embeds_one :attribute
+  field :score, type: Float
+
+  has_one :sequence, as: :parent
   embedded_in :sequence
 end
 
-class Attribute
+class Resource
   include Mongoid::Document
-  include Mongoid::Timestamps
 
-  field :gene_id, type: String
-  field :transcript_id, type: String
-  embedded_in :annotation
-end
-
-class Expression
-  include Mongoid::Document
-  include Mongoid::Timestamps
-
-  field :condition, type: String
-  field :source, type: String
-  embeds_one :fpkm
-  embeds_one :rpkm
-  embedded_in :sequence
-end
-
-class Fpkm
-  include Mongoid::Document
-  include Mongoid::Timestamps
-
-  field :value, type: Float
-  belongs_to :expression
-end
-
-class Rpkm
-  include Mongoid::Document
-  include Mongoid::Timestamps
-
-  field :value, type: Float
-  belongs_to :expression
+  field :name
+  field :link
 end

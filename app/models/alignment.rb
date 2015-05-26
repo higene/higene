@@ -1,3 +1,4 @@
+require 'workspace'
 require 'sequence'
 
 class Alignment
@@ -15,8 +16,7 @@ class Alignment
   field :positive, type: Integer
   field :pct_positive, type: Float
   embeds_many :subjects
-  has_many :collections, as: :parents
-  has_many :users, as: :owners
+  belongs_to :workspace
 end
 
 class Subject
