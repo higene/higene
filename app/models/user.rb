@@ -33,7 +33,7 @@ class User
   field :current_sign_in_ip, type: String
   field :last_sign_in_ip,    type: String
 
-  belongs_to :member
+  has_many :members
 
   ## Confirmable
   # field :confirmation_token,   type: String
