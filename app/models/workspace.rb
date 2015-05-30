@@ -9,8 +9,8 @@ class Workspace
   field :name, type: String
   field :description, type: String
   embeds_many :members
-  has_many :sequences, as: :children
-  has_many :alignments, as: :children
+  has_many :children, class_name: "Sequence"
+  has_many :children, class_name: "Alignment"
 end
 
 class Member

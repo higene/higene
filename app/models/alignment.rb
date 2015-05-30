@@ -16,7 +16,7 @@ class Alignment
   field :positive, type: Integer
   field :pct_positive, type: Float
   embeds_many :subjects
-  belongs_to :workspace
+  belongs_to :workspace, inverse_of: :children
 end
 
 class Subject

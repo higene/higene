@@ -8,13 +8,19 @@ class Sequence
   field :name, type: String
   field :feature, type: String
   field :sequence, type: String
-  field :taxid, type: Integer
 
-  embeds_many :locations
-  embeds_many :resoueces
-  belongs_to :workspace
+  belongs_to :workspace, inverse_of: :children
   belongs_to :subject
-  belongs_to :location
+
+  has_many :locations,
+           class_name: "Location",
+           inverse_of: :sequence
+  has_and_belongs_to_many :children,
+                          class_name: "Location",
+                          inverse_of: :parents
+  has_many :derivatives,
+           class_name: "Location",
+           inverse_of: :reference
 end
 
 class Location
@@ -27,13 +33,13 @@ class Location
   field :frame, type: Integer
   field :score, type: Float
 
-  has_one :sequence, as: :parent
-  embedded_in :sequence
-end
-
-class Resource
-  include Mongoid::Document
-
-  field :name
-  field :link
+  belongs_to :sequence,
+             class_name: "Sequence",
+             inverse_of: :locations
+  has_and_belongs_to_many :parents,
+                          class_name: "Sequence",
+                          inverse_of: :children
+  belongs_to :reference,
+             class_name: "Sequence",
+             inverse_of: :derivatives
 end
