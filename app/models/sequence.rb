@@ -6,7 +6,7 @@ class Sequence
   include Mongoid::Timestamps
 
   field :name, type: String
-  field :category, type: String
+  field :type, type: String
   field :sequence, type: String
 
   belongs_to :workspace, inverse_of: :children
@@ -29,9 +29,9 @@ class Location
   field :source, type: String
   field :start, type: Integer
   field :end, type: Integer
-  field :strand, type: Integer
-  field :frame, type: Integer
   field :score, type: Float
+  field :strand, type: String
+  field :phase, type: Integer
 
   belongs_to :sequence,
              class_name: "Sequence",
