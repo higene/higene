@@ -35,7 +35,7 @@ module Gff
                   :is_circular
   end
 
-  def convert_type(value, callback = nil)
+  def self.convert_type(value, callback = nil)
     if value == "."
       nil
     else
@@ -47,7 +47,7 @@ module Gff
     end
   end
 
-  def parse(filename)
+  def self.parse(filename)
     File.open filename do |f|
       f.each do |line|
         line.strip!
