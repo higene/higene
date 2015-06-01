@@ -15,9 +15,9 @@ class Sequence
   has_many :locations,
            class_name: "Location",
            inverse_of: :sequence
-  has_and_belongs_to_many :children,
-                          class_name: "Location",
-                          inverse_of: :parents
+  has_many :children,
+           class_name: "Location",
+           inverse_of: :parent
   has_many :derivatives,
            class_name: "Location",
            inverse_of: :reference
@@ -36,9 +36,9 @@ class Location
   belongs_to :sequence,
              class_name: "Sequence",
              inverse_of: :locations
-  has_and_belongs_to_many :parents,
-                          class_name: "Sequence",
-                          inverse_of: :children
+  belongs_to :parent,
+             class_name: "Sequence",
+             inverse_of: :children
   belongs_to :reference,
              class_name: "Sequence",
              inverse_of: :derivatives

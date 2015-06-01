@@ -15,31 +15,36 @@ class SequencesController < ApplicationController
 
   def create
     Gff.parse params[:file].path do |record|
-      sequence = Sequence.find_or_initialize_by workspace: @current_workspace,
-                                                name: record.attributes.id
-      sequence.type = record.type
-      sequence.update!
       reference = Sequence.find_or_create_by workspace: @current_workspace,
                                              name: record.seqid
-
-      location = Location.find_or_initialize_by source: record.source,
-                                                start: record.start,
-                                                end: record.end,
-                                                score: record.score,
-                                                strand: record.strand,
-                                                phase: record.phase,
-                                                sequence: sequence,
-                                                reference: reference
-
       if record.attributes.parent.nil?
-        location.save!
+        if record.seqid.nil?
+          next
+        else
+          sequence = Sequence.find_or_initialize_by workspace: @current_workspace,
+                                                    name: record.attributes.id
+          sequence.type = record.type
+          sequence.save!
+        end
       else
-        parent = Sequence.find_or_initialize_by workspace: @current_workspace,
-                                                name: record.attributes.parent
-        location.parents.push(parent)
-        parent.children.push(location)
+        reference = Sequence.find_or_create_by workspace: @current_workspace,
+                                               name: record.seqid
+        parent = Sequence.find_or_create_by workspace: @current_workspace,
+                                            name: record.attributes.parent
+        sequence = Sequence.create! workspace: @current_workspace,
+                                    type: record.type
       end
+      Location.create! source: record.source,
+                       start: record.start,
+                       end: record.end,
+                       score: record.score,
+                       strand: record.strand,
+                       phase: record.phase,
+                       sequence: sequence,
+                       parent: parent,
+                       reference: reference
     end
+    render json: {}
   end
 
   def current_workspace
