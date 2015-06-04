@@ -14,35 +14,48 @@ class SequencesController < ApplicationController
   end
 
   def create
+    slice_size = 5000
+    n = 1
+    records = []
+
     Gff.parse params[:file].path do |record|
-      reference = Sequence.find_or_create_by workspace: @current_workspace,
-                                             name: record.seqid
-      if record.attributes.parent.nil?
-        if record.seqid.nil?
-          next
-        else
-          sequence = Sequence.find_or_initialize_by workspace: @current_workspace,
-                                                    name: record.attributes.id
-          sequence.type = record.type
-          sequence.save!
+      records << record
+    end
+
+    records.each_slice(slice_size) do |slice|
+      Sequence.connection.batch do
+        slice.each do |record|
+          if record.attributes.id.nil?
+            record.attributes.id = [record.type, n].join "."
+            n += 1
+          end
+
+          Location.create workspace_id: @current_workspace.id,
+                          query: record.attributes.id,
+                          source: record.source,
+                          start: record.start,
+                          end: record.end,
+                          score: record.score,
+                          strand: record.strand,
+                          phase: record.phase,
+                          reference: record.seqid
+
+          unless record.attributes.parent.nil?
+            Sequence.connection.execute(%(
+              UPDATE sequences
+                 SET children = children + {'#{record.attributes.id}'}
+               WHERE workspace_id = '#{@current_workspace.id}'
+                 AND name = '#{record.attributes.parent}'
+            ))
+            Sequence.connection.execute(%(
+              UPDATE sequences
+                 SET parents = parents + {'#{record.attributes.parent}'}
+               WHERE workspace_id = '#{@current_workspace.id}'
+                 AND name = '#{record.attributes.id}'
+            ))
+          end
         end
-      else
-        reference = Sequence.find_or_create_by workspace: @current_workspace,
-                                               name: record.seqid
-        parent = Sequence.find_or_create_by workspace: @current_workspace,
-                                            name: record.attributes.parent
-        sequence = Sequence.create! workspace: @current_workspace,
-                                    type: record.type
       end
-      Location.create! source: record.source,
-                       start: record.start,
-                       end: record.end,
-                       score: record.score,
-                       strand: record.strand,
-                       phase: record.phase,
-                       sequence: sequence,
-                       parent: parent,
-                       reference: reference
     end
     render json: {}
   end

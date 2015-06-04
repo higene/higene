@@ -1,45 +1,25 @@
-require 'workspace'
-require 'alignment'
-
 class Sequence
-  include Mongoid::Document
-  include Mongoid::Timestamps
+  include Cequel::Record
 
-  field :name, type: String
-  field :type, type: String
-  field :sequence, type: String
-
-  belongs_to :workspace, inverse_of: :children
-  belongs_to :subject
-
-  has_many :locations,
-           class_name: "Location",
-           inverse_of: :sequence
-  has_many :children,
-           class_name: "Location",
-           inverse_of: :parent
-  has_many :derivatives,
-           class_name: "Location",
-           inverse_of: :reference
+  key :workspace_id, :text
+  key :name, :text
+  column :type, :text, index: true
+  column :sequence, :text
+  set :parents, :text
+  set :children, :text
 end
 
 class Location
-  include Mongoid::Document
+  include Cequel::Record
 
-  field :source, type: String
-  field :start, type: Integer
-  field :end, type: Integer
-  field :score, type: Float
-  field :strand, type: String
-  field :phase, type: Integer
-
-  belongs_to :sequence,
-             class_name: "Sequence",
-             inverse_of: :locations
-  belongs_to :parent,
-             class_name: "Sequence",
-             inverse_of: :children
-  belongs_to :reference,
-             class_name: "Sequence",
-             inverse_of: :derivatives
+  key :id, :uuid, auto: true
+  key :workspace_id, :text
+  column :source, :text
+  column :reference, :text, index: true
+  column :query, :text, index: true
+  column :start, :int
+  column :end, :int
+  column :score, :float
+  column :strand, :text
+  column :phase, :int
 end

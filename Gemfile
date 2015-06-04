@@ -38,6 +38,9 @@ gem 'mongoid', '~> 4.0.0'
 # Flexible authentication solution for Rails with Warden
 gem 'devise', '3.4.1'
 
+# Cequel is a Ruby ORM for Cassandra using CQL3
+gem 'cequel', '1.6.1'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
