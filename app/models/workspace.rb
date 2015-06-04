@@ -1,5 +1,5 @@
 require 'user'
-require 'sequence'
+# require 'sequence'
 require 'alignment'
 
 class Workspace
@@ -9,8 +9,8 @@ class Workspace
   field :name, type: String
   field :description, type: String
   has_many :members
-  has_many :children, class_name: "Sequence"
-  has_many :children, class_name: "Alignment"
+  # has_many :children, class_name: "Sequence"
+  # has_many :children, class_name: "Alignment"
 end
 
 class Member
