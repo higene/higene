@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, path: 'u'
 
   get 'home/index'
-  resources 'workspaces' do
+  resources 'workspaces', path: 's' do
     resources 'sequences'
   end
 end

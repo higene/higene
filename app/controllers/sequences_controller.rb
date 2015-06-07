@@ -1,9 +1,9 @@
 require 'parser/gff'
+require 'cql'
 
 class SequencesController < ApplicationController
   before_action :authenticate_user!
   before_action :current_workspace, only: [:index, :create]
-  include Gff
 
   def index
     sequence = Sequence.where(workspace: @current_workspace)
@@ -14,48 +14,59 @@ class SequencesController < ApplicationController
   end
 
   def create
-    slice_size = 5000
-    n = 1
+    slice_size = 1000
     records = []
 
     Gff.parse params[:file].path do |record|
+      if record.attributes.id.nil?
+        record.attributes.id = [
+          record.seqid,
+          record.type,
+          record.start,
+          record.end
+        ].join "."
+      end
       records << record
     end
 
     records.each_slice(slice_size) do |slice|
-      Sequence.connection.batch do
-        slice.each do |record|
-          if record.attributes.id.nil?
-            record.attributes.id = [record.type, n].join "."
-            n += 1
-          end
+      cmd = ['BEGIN BATCH ']
+      slice.each do |record|
+        cmd << %(
+          INSERT INTO #{Location.table_name}
+            (#{Location.column_names.join(',')})
+          VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            #{CQL.quote(record.seqid)},
+            #{CQL.quote(record.type)},
+            #{CQL.quote(record.start)},
+            #{CQL.quote(record.end)},
+            #{CQL.quote(record.source)},
+            #{CQL.quote(record.attributes.id)},
+            #{CQL.quote(record.score)},
+            #{CQL.quote(record.strand)},
+            #{CQL.quote(record.phase)}
+          )
+        ;).squish
 
-          Location.create workspace_id: @current_workspace.id,
-                          query: record.attributes.id,
-                          source: record.source,
-                          start: record.start,
-                          end: record.end,
-                          score: record.score,
-                          strand: record.strand,
-                          phase: record.phase,
-                          reference: record.seqid
+        unless record.attributes.parent.nil?
+          cmd << %(
+            UPDATE #{Sequence.table_name}
+            SET parents = parents + {#{CQL.quote(record.attributes.parent)}}
+            WHERE workspace_id = '#{@current_workspace.id}'
+            AND name = #{Cequel::Type.quote(record.attributes.id)}
+          ;).squish
 
-          unless record.attributes.parent.nil?
-            Sequence.connection.execute(%(
-              UPDATE sequences
-                 SET children = children + {'#{record.attributes.id}'}
-               WHERE workspace_id = '#{@current_workspace.id}'
-                 AND name = '#{record.attributes.parent}'
-            ))
-            Sequence.connection.execute(%(
-              UPDATE sequences
-                 SET parents = parents + {'#{record.attributes.parent}'}
-               WHERE workspace_id = '#{@current_workspace.id}'
-                 AND name = '#{record.attributes.id}'
-            ))
-          end
+          cmd << %(
+            UPDATE #{Sequence.table_name}
+            SET children = children + {#{CQL.quote(record.attributes.id)}}
+            WHERE workspace_id = #{CQL.quote(@current_workspace.id.to_s)}
+            AND name = #{CQL.quote(record.attributes.parent)}
+          ;).squish
         end
       end
+      cmd << "APPLY BATCH;"
+      Sequence.connection.execute(cmd.join)
     end
     render json: {}
   end
