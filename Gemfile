@@ -33,6 +33,12 @@ gem 'cequel', '1.6.1'
 # The Ruby interface to the PostgreSQL RDBMS
 gem 'pg', '0.18.1'
 
+# A Sass-powered version of Bootstrap
+gem 'bootstrap-sass', '3.3.4.1'
+
+# The font-awesome font bundled as an asset for the rails asset pipeline
+gem 'font-awesome-rails', '4.3.0.0'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

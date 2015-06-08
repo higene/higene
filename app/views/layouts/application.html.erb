@@ -1,14 +1,49 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Higene</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
+  <head>
+    <title>HiGene</title>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= csrf_meta_tags %>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <nav class="navbar navbar-default">
+          <div class="navbar-header">
+            <%= link_to fa_icon("home", text: ""), root_path, class: "navbar-brand" %>
+          </div>
 
-<%= yield %>
-
-</body>
+          <div class="collapse navbar-collapse" id="top-navbar">
+            <ul class="nav navbar-nav navbar-right">
+              <% if current_user %>
+                <li><%= link_to fa_icon("plus-square-o"), new_workspace_path, data: { toggle: "tooltip", placement: "bottom", title: "New dataset" } %></li>
+                <li><%= link_to fa_icon("list"), workspaces_path, data: { toggle: "tooltip", placement: "bottom", title: "List datasets" } %></li>
+                <li><%= link_to fa_icon("wrench"), edit_registration_path(:user), data: { toggle: "tooltip", placement: "bottom", title: "Edit profile" } %></li>
+                <li><%= link_to fa_icon("sign-out"), destroy_user_session_path, method: :delete, data: { toggle: "tooltip", placement: "bottom", title: "Log out" } %></li>
+              <% else %>
+                <li><%= link_to "<strong>Sign up</strong>".html_safe, new_registration_path(:user), class: "btn btn-success" %></li>
+                <li><%= link_to "<strong>Log in</strong>".html_safe, new_session_path(:user), class: "btn btn-default" %></li>
+              <% end %>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <div class="row">
+        <div class="col-sm-6 center">
+          <% flash.each do |key, value| %>
+            <div class="alert alert-<%= key %> alert-dismissible" role="alert" data-dismiss="true">
+              <%= button_tag "<span aria-hidden=\"true\">&times;</span>".html_safe, type: "button", class: "close", data: { dismiss: "alert" }, aria: { label: "Close" } %>
+              <%= value %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="row">
+        <div class="main">
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
