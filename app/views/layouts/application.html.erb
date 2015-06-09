@@ -17,8 +17,8 @@
           <div class="collapse navbar-collapse" id="top-navbar">
             <ul class="nav navbar-nav navbar-right">
               <% if current_user %>
-                <li><%= link_to fa_icon("plus-square-o"), new_workspace_path, data: { toggle: "tooltip", placement: "bottom", title: "New dataset" } %></li>
-                <li><%= link_to fa_icon("list"), workspaces_path, data: { toggle: "tooltip", placement: "bottom", title: "List datasets" } %></li>
+                <li><%= link_to fa_icon("plus-square-o"), new_workspace_path, data: { toggle: "tooltip", placement: "bottom", title: "New workspace" } %></li>
+                <li><%= link_to fa_icon("list"), workspaces_path, data: { toggle: "tooltip", placement: "bottom", title: "List workspaces" } %></li>
                 <li><%= link_to fa_icon("wrench"), edit_registration_path(:user), data: { toggle: "tooltip", placement: "bottom", title: "Edit profile" } %></li>
                 <li><%= link_to fa_icon("sign-out"), destroy_user_session_path, method: :delete, data: { toggle: "tooltip", placement: "bottom", title: "Log out" } %></li>
               <% else %>
