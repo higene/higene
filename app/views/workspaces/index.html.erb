@@ -1,0 +1,41 @@
+<%= title "List workspaces"%>
+
+<div class="col-sm-10 center">
+  <% if @workspaces.empty? %>
+    <div class="col-sm-7 center">
+      <div class="alert alert-warning text-center", role="alert">
+        <p>Ooh, you don't have any workspace.</p><br>
+        <%= link_to "Create a workspace", new_workspace_path, class: "btn btn-primary", role: "button" %>
+      </div>
+    </div>
+  <% else %>
+    <div id="list_workspaces">
+      <hr>
+      <% @workspaces.each do |workspace| %>
+        <div class="row ws-row-title">
+          <div class="col-sm-9">
+            <%= link_to content_tag(:h4, content_tag(:strong, workspace.name)), workspace_sequences_path(workspace.id), class: "text-info ws-list-name" %>
+          </div>
+          <div class="col-sm-3 text-right">
+            <span class="ws-list-operation">
+              <%= link_to fa_icon("info-circle"), workspace_path(workspace.id), data: { toggle: "tooltip", placement: "bottom", title: "Show" } %><% if workspace.members.find_by(user: current_user).role == "owner" %><%= link_to fa_icon("pencil"), edit_workspace_path(workspace.id), data: { toggle: "tooltip", placement: "bottom", title: "Edit" } %><%= link_to fa_icon("trash-o"), workspace_path(workspace.id), method: :delete, data: { toggle: "tooltip", placement: "bottom", title: "Delete" } %><% end %>
+            </span>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-9">
+            <div class="ws-list-description"><%= long_content_tag workspace.description %></div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-sm-9">
+            <h4><small>Updated <%= distance_of_time_in_words_to_now workspace.updated_at %></small></h4>
+          </div>
+        </div>
+      <% end %>
+      <hr>
+    </div>
+  <% end %>
+</div>

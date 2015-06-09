@@ -1,9 +1,9 @@
-<%= title "Create new workspace" %>
+<%= title "Edit workspace" %>
 
 <div class="col-sm-5 center">
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title text-center">Create new workspace</h3>
+      <h3 class="panel-title text-center">Edit workspace</h3>
     </div>
     <div class="panel-body">
       <%= form_for @workspace, class: "form-inline" do |f| %>
@@ -17,7 +17,7 @@
           <%= f.text_area :description, class: "form-control", placeholder: "Description", rows: "10" %>
         </div>
         <div class="pull-right">
-          <%= f.submit "Create", class: "btn btn-info" %>
+          <%= f.submit "Update", class: "btn btn-info" %>
         </div>
       <% end %>
     </div>

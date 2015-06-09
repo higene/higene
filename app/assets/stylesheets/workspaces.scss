@@ -1,3 +1,21 @@
-// Place all the styles related to the workspaces controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.ws-row-title {
+  margin-top: 20px;
+}
+
+.ws-list-name {
+}
+
+.ws-list-operation a {
+  padding-left: 6px;
+  padding-right: 6px;
+  color: inherit;
+}
+
+.ws-list-description {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+#add-member-form {
+  padding-top: 20px;
+}

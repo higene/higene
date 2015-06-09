@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>HiGene</title>
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <title><%= yield :title %></title>
+    <%= stylesheet_link_tag    'application', params[:controller], media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', params[:controller], 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
   </head>
   <body>
@@ -11,16 +11,16 @@
       <div class="row">
         <nav class="navbar navbar-default">
           <div class="navbar-header">
-            <%= link_to fa_icon("home", text: ""), root_path, class: "navbar-brand" %>
+            <%= link_to fa_icon("home lg", text: ""), root_path, class: "navbar-brand" %>
           </div>
 
           <div class="collapse navbar-collapse" id="top-navbar">
             <ul class="nav navbar-nav navbar-right">
               <% if current_user %>
-                <li><%= link_to fa_icon("plus-square-o"), new_workspace_path, data: { toggle: "tooltip", placement: "bottom", title: "New workspace" } %></li>
-                <li><%= link_to fa_icon("list"), workspaces_path, data: { toggle: "tooltip", placement: "bottom", title: "List workspaces" } %></li>
-                <li><%= link_to fa_icon("wrench"), edit_registration_path(:user), data: { toggle: "tooltip", placement: "bottom", title: "Edit profile" } %></li>
-                <li><%= link_to fa_icon("sign-out"), destroy_user_session_path, method: :delete, data: { toggle: "tooltip", placement: "bottom", title: "Log out" } %></li>
+                <li><%= link_to fa_icon("plus-square-o lg"), new_workspace_path, data: { toggle: "tooltip", placement: "bottom", title: "New workspace" } %></li>
+                <li><%= link_to fa_icon("list lg"), workspaces_path, data: { toggle: "tooltip", placement: "bottom", title: "List workspaces" } %></li>
+                <li><%= link_to fa_icon("wrench lg"), edit_registration_path(:user), data: { toggle: "tooltip", placement: "bottom", title: "Edit profile" } %></li>
+                <li><%= link_to fa_icon("sign-out lg"), destroy_user_session_path, method: :delete, data: { toggle: "tooltip", placement: "bottom", title: "Log out" } %></li>
               <% else %>
                 <li><%= link_to "<strong>Sign up</strong>".html_safe, new_registration_path(:user), class: "btn btn-success" %></li>
                 <li><%= link_to "<strong>Log in</strong>".html_safe, new_session_path(:user), class: "btn btn-default" %></li>
