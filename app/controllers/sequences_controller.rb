@@ -3,14 +3,30 @@ require 'cql'
 
 class SequencesController < ApplicationController
   before_action :authenticate_user!
-  before_action :current_workspace, only: [:index, :create]
+  before_action :find_workspace, only: [:new, :index, :create]
+  before_action :find_workspaces, only: [:new]
 
   def index
-    sequence = Sequence.where(workspace: @current_workspace)
-    render json: sequence[0..10]
+    limit = params[:limit] || 10
+    after = params[:after]
+
+    if after.nil?
+      @sequences = Sequence.where(workspace_id: @current_workspace.id)
+                   .first(limit)
+    else
+      @sequences = Sequence.where(workspace_id: @current_workspace.id)
+                   .after(after).first(limit)
+    end
   end
 
   def new
+    @formats = {
+      gff: "Generic Feature Format (gff)",
+      gtf: "General Transfer Format (gtf)",
+      fasta: "FASTA Format (fasta)"
+    }
+
+    @workspaces
   end
 
   def create
@@ -49,6 +65,16 @@ class SequencesController < ApplicationController
           )
         ;).squish
 
+        cmd << %(
+          INSERT INTO #{Sequence.table_name}
+            (workspace_id, name, type)
+          VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            #{CQL.quote(record.attributes.id)},
+            #{CQL.quote(record.type)}
+          )
+        ;).squish
+
         unless record.attributes.parent.nil?
           cmd << %(
             UPDATE #{Sequence.table_name}
@@ -68,10 +94,10 @@ class SequencesController < ApplicationController
       cmd << "APPLY BATCH;"
       Sequence.connection.execute(cmd.join)
     end
-    render json: {}
+    redirect_to workspace_sequences_url
   end
 
-  def current_workspace
+  def find_workspace
     workspace = Workspace.where(id: params[:workspace_id]).first
     unless workspace.nil?
       member = Member.where(user: current_user, workspace: workspace)
@@ -82,5 +108,9 @@ class SequencesController < ApplicationController
     end
 
     fail "Invalid workspace ID: #{params[:workspace_id]}."
+  end
+
+  def find_workspaces
+    @workspaces = Member.where(user: current_user).collect(&:workspace)
   end
 end
