@@ -1,0 +1,14 @@
+<nav>
+  <ul class="pager">
+    <% if @previous_url.nil? %>
+      <li class="disabled"><a href="#">Previous</a></li>
+    <% else %>
+      <li><a href="<%= @previous_url %>">Previous</a></li>
+    <% end %>
+    <% if @next_url.nil? %>
+      <li class="disabled"><a href="#">Next</a></li>
+    <% else %>
+      <li><a href="<%= @next_url %>">Next</a></li>
+    <% end %>
+  </ul>
+</nav>

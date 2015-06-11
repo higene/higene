@@ -7,15 +7,36 @@ class SequencesController < ApplicationController
   before_action :find_workspaces, only: [:new]
 
   def index
-    limit = params[:limit] || 10
+    limit = params[:limit].to_i || 10
     after = params[:after]
+    before = params[:before]
+    from = params[:from]
+    upto = params[:upto]
 
-    if after.nil?
-      @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .first(limit)
-    else
+    if !after.nil?
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
                    .after(after).first(limit)
+    elsif !before.nil?
+      @sequences = Sequence.where(workspace_id: @current_workspace.id)
+                   .before(before).first(limit)
+    elsif !from.nil?
+      @sequences = Sequence.where(workspace_id: @current_workspace.id)
+                   .from(from).first(limit)
+    elsif !upto.nil?
+      @sequences = Sequence.where(workspace_id: @current_workspace.id)
+                   .upto(upto).first(limit)
+    else
+      @sequences = Sequence.where(workspace_id: @current_workspace.id)
+                   .first(limit)
+    end
+
+    unless @sequences.first.nil?
+      unless Sequence.where(workspace_id: @current_workspace.id).before(@sequences.first.name).first(1).first.nil?
+        @previous_url = "#{workspace_sequences_url}?limit=#{limit}&before=#{CGI.escape(@sequences.first.name)}"
+      end
+      unless Sequence.where(workspace_id: @current_workspace.id).after(@sequences.last.name).first(1).first.nil?
+        @next_url = "#{workspace_sequences_url}?limit=#{limit}&after=#{CGI.escape(@sequences.last.name)}"
+      end
     end
   end
 

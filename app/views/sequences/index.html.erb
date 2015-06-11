@@ -9,6 +9,7 @@
       </div>
     </div>
   <% else %>
+    <%= render "shared/pager" %>
     <% @sequences.each do |sequence| %>
       <div class="row">
         <%= "#{sequence.name} | #{sequence.type} " %>
