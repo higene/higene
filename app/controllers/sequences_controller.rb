@@ -7,7 +7,8 @@ class SequencesController < ApplicationController
   before_action :find_workspaces, only: [:new]
 
   def index
-    limit = params[:limit].to_i || 10
+    limit = params[:limit].to_i
+    limit = 10 if limit <= 0
     after = params[:after]
     before = params[:before]
     from = params[:from]
