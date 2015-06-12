@@ -91,6 +91,16 @@ class SequencesController < ApplicationController
           )
         ;).squish
 
+        cmd << %(
+          INSERT INTO #{Sequence.table_name}
+            (workspace_id, name, type)
+          VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            #{CQL.quote(record.seqid)},
+            'chromosome'
+          )
+        ;).squish
+
         unless record.attributes.parent.nil?
           cmd << %(
             UPDATE #{Sequence.table_name}
