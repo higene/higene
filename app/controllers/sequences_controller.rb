@@ -5,38 +5,32 @@ class SequencesController < ApplicationController
   before_action :authenticate_user!
   before_action :find_workspace, only: [:new, :index, :create]
   before_action :find_workspaces, only: [:new]
+  before_action :pager_params, only: [:index]
 
   def index
-    limit = params[:limit].to_i
-    limit = 10 if limit <= 0
-    after = params[:after]
-    before = params[:before]
-    from = params[:from]
-    upto = params[:upto]
-
-    if !after.nil?
+    if !@after.nil?
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .after(after).first(limit)
-    elsif !before.nil?
+                   .after(@after).first(@limit)
+    elsif !@before.nil?
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .before(before).first(limit)
-    elsif !from.nil?
+                   .before(@before).first(@limit)
+    elsif !@from.nil?
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .from(from).first(limit)
-    elsif !upto.nil?
+                   .from(@from).first(@limit)
+    elsif !@upto.nil?
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .upto(upto).first(limit)
+                   .upto(@upto).first(@limit)
     else
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .first(limit)
+                   .first(@limit)
     end
 
     unless @sequences.first.nil?
       unless Sequence.where(workspace_id: @current_workspace.id).before(@sequences.first.name).first(1).first.nil?
-        @previous_url = "#{workspace_sequences_url}?limit=#{limit}&before=#{CGI.escape(@sequences.first.name)}"
+        @previous_url = "#{workspace_sequences_url}?limit=#{@limit}&before=#{CGI.escape(@sequences.first.name)}"
       end
       unless Sequence.where(workspace_id: @current_workspace.id).after(@sequences.last.name).first(1).first.nil?
-        @next_url = "#{workspace_sequences_url}?limit=#{limit}&after=#{CGI.escape(@sequences.last.name)}"
+        @next_url = "#{workspace_sequences_url}?limit=#{@limit}&after=#{CGI.escape(@sequences.last.name)}"
       end
     end
   end
@@ -58,10 +52,10 @@ class SequencesController < ApplicationController
     Gff.parse params[:file].path do |record|
       if record.attributes.id.nil?
         record.attributes.id = [
-          record.seqid,
           record.type,
           record.start,
-          record.end
+          record.end,
+          record.seqid
         ].join "."
       end
       records << record
@@ -134,5 +128,14 @@ class SequencesController < ApplicationController
 
   def find_workspaces
     @workspaces = Member.where(user: current_user).collect(&:workspace)
+  end
+
+  def pager_params
+    @limit = params[:limit].to_i
+    @limit = 10 if @limit <= 0
+    @after = params[:after]
+    @before = params[:before]
+    @from = params[:from]
+    @upto = params[:upto]
   end
 end
