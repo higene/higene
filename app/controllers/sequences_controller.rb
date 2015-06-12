@@ -8,29 +8,29 @@ class SequencesController < ApplicationController
   before_action :pager_params, only: [:index]
 
   def index
-    if !@after.nil?
+    if !@before.nil?
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .after(@after).first(@limit)
-    elsif !@before.nil?
+                   .before(@before).limit(@limit).reverse.to_a.reverse
+    elsif !@after.nil?
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .before(@before).first(@limit)
-    elsif !@from.nil?
-      @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .from(@from).first(@limit)
-    elsif !@upto.nil?
-      @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .upto(@upto).first(@limit)
+                   .after(@after).limit(@limit).to_a
     else
       @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .first(@limit)
+                   .first(@limit).to_a
     end
 
-    unless @sequences.first.nil?
-      unless Sequence.where(workspace_id: @current_workspace.id).before(@sequences.first.name).first(1).first.nil?
-        @previous_url = "#{workspace_sequences_url}?limit=#{@limit}&before=#{CGI.escape(@sequences.first.name)}"
+    unless @sequences.empty?
+      unless (Sequence.where(workspace_id: @current_workspace.id)
+               .before(@sequences.first.name).limit(1).to_a.empty?)
+        @previous_url = "#{workspace_sequences_url}?" \
+                        "limit=#{@limit}&" \
+                        "before=#{CGI.escape(@sequences.first.name)}"
       end
-      unless Sequence.where(workspace_id: @current_workspace.id).after(@sequences.last.name).first(1).first.nil?
-        @next_url = "#{workspace_sequences_url}?limit=#{@limit}&after=#{CGI.escape(@sequences.last.name)}"
+      unless (Sequence.where(workspace_id: @current_workspace.id)
+               .after(@sequences.last.name).limit(1).to_a.empty?)
+        @next_url = "#{workspace_sequences_url}?" \
+                    "limit=#{@limit}&" \
+                    "after=#{CGI.escape(@sequences.last.name)}"
       end
     end
   end
@@ -135,7 +135,5 @@ class SequencesController < ApplicationController
     @limit = 10 if @limit <= 0
     @after = params[:after]
     @before = params[:before]
-    @from = params[:from]
-    @upto = params[:upto]
   end
 end
