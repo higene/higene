@@ -21,8 +21,8 @@
             <%= link_to content_tag(:h4, content_tag(:strong, workspace.name)), workspace_sequences_path(workspace.id), class: "text-info ws-list-name" %>
           </div>
           <div class="col-sm-4 text-right">
-            <span class="ws-list-star">0 <%= fa_icon("star") %></span>
-            <span class="ws-list-member"><%= workspace.members.length %> <%= fa_icon("users") %></span>
+            <span class="ws-list-star"><%= fa_icon("star") %> 0</span>
+            <span class="ws-list-member"><%= fa_icon("users") %> <%= workspace.members.length %></span>
             <span class="ws-list-operation">
               <%= link_to fa_icon("info-circle"), workspace_path(workspace.id), data: { toggle: "tooltip", placement: "bottom", title: "Show" } %><% if workspace.members.find_by(user: current_user).role == "owner" %><%= link_to fa_icon("pencil"), edit_workspace_path(workspace.id), data: { toggle: "tooltip", placement: "bottom", title: "Edit" } %><%= link_to fa_icon("trash-o"), workspace_path(workspace.id), method: :delete, data: { toggle: "tooltip", placement: "bottom", title: "Delete" } %><% end %>
             </span>
