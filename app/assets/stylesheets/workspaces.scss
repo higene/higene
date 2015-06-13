@@ -5,6 +5,12 @@
 .ws-list-name {
 }
 
+.ws-list-star, .ws-list-member{
+  color: grey;
+  font-weight: bold;
+  padding-right: 10px;
+}
+
 .ws-list-operation a {
   padding-left: 6px;
   padding-right: 6px;
