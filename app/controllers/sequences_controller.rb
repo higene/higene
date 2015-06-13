@@ -123,6 +123,8 @@ class SequencesController < ApplicationController
     redirect_to workspace_sequences_url
   end
 
+  private
+
   def find_workspace
     workspace = Workspace.where(id: params[:workspace_id]).first
     unless workspace.nil?
@@ -142,7 +144,7 @@ class SequencesController < ApplicationController
 
   def pager_params
     @limit = params[:limit].to_i
-    @limit = 10 if @limit <= 0
+    @limit = 10 if @limit <= 0 || @limit > 100
     @after = params[:after]
     @before = params[:before]
   end
