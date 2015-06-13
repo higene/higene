@@ -1,6 +1,7 @@
 <%= title "List workspaces"%>
 
-<div class="col-sm-10 center">
+<div class="col-sm-3"></div>
+<div class="col-sm-6">
   <% if @workspaces.empty? %>
     <div class="col-sm-7 center">
       <div class="alert alert-warning text-center", role="alert">
@@ -10,7 +11,10 @@
     </div>
   <% else %>
     <div id="list_workspaces">
-      <hr>
+      <div class="row">
+        <h3 class="text-center"><%= current_user.username %>'s workspaces</h3>
+      </div>
+      <div class="row"><hr></div>
       <% @workspaces.each do |workspace| %>
         <div class="row ws-row-title">
           <div class="col-sm-9">
@@ -39,3 +43,4 @@
     </div>
   <% end %>
 </div>
+<div class="col-sm-3"></div>
