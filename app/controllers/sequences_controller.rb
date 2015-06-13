@@ -6,6 +6,7 @@ class SequencesController < ApplicationController
   before_action :find_workspace, only: [:new, :index, :create]
   before_action :find_workspaces, only: [:new]
   before_action :pager_params, only: [:index]
+  before_action :find_sequence, only: [:show]
 
   def index
     if !@before.nil?
@@ -123,6 +124,9 @@ class SequencesController < ApplicationController
     redirect_to workspace_sequences_url
   end
 
+  def show
+  end
+
   private
 
   def find_workspace
@@ -147,5 +151,9 @@ class SequencesController < ApplicationController
     @limit = 10 if @limit <= 0 || @limit > 100
     @after = params[:after]
     @before = params[:before]
+  end
+
+  def find_sequence
+    @sequence = Sequence.find(params[:workspace_id], params[:name])
   end
 end

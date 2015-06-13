@@ -1,0 +1,91 @@
+<%= title @sequence.name %>
+
+<div class="col-sm-2"></div>
+<div class="col-sm-8">
+  <div class="page-header">
+    <h3><%= @sequence.name %>
+      <% unless @sequence.type.nil? %>
+        <small>[<%= @sequence.type %>]</small>
+      <% end %>
+    </h3>
+  </div>
+
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title text-capitalize">genome position</h3>
+      </div>
+      <div class="panel-body">
+        <% unless @sequence.locations.empty? %>
+          <div class="row">
+            <%= render "genome_position_header" %>
+          </div>
+          <% @sequence.locations.each do |location| %>
+            <div class="row">
+              <%= render "genome_position_body", location: location %>
+            </div>
+          <% end %>
+        <% end %>
+
+        <% unless @sequence.parent_sequences.empty? %>
+          <div class="row">
+            <div class="col-sm-12">
+              <h3><small>Parents</small></h3>
+            </div>
+          </div>
+          <% @sequence.parent_sequences.each do |parent| %>
+            <div class="row">
+              <div class="col-sm-12">
+                <h5><%= link_to parent.name, workspace_sequence_path(name: parent.name) %></h5>
+              </div>
+            </div>
+            <div class="row">
+              <%= render "genome_position_header" %>
+            </div>
+
+            <% parent.locations.each do |location| %>
+              <div class="row">
+                <%= render "genome_position_body", location: location %>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <% unless @sequence.subsequences.empty? %>
+          <div class="row">
+            <div class="col-sm-12">
+              <h3><small>Subsequences</small></h3>
+            </div>
+          </div>
+          <% @sequence.subsequences.each do |subseq| %>
+            <div class="row">
+              <div class="col-sm-12">
+                <h5><%= link_to subseq.name, workspace_sequence_path(name: subseq.name) %></h5>
+              </div>
+            </div>
+            <div class="row">
+              <%= render "genome_position_header" %>
+            </div>
+
+            <% subseq.locations.each do |location| %>
+              <div class="row">
+                <%= render "genome_position_body", location: location %>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title text-capitalize">gene expression</h3>
+      </div>
+      <div class="panel-body">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-sm-2"></div>

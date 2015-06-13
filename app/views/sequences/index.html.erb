@@ -1,6 +1,7 @@
 <%= title("Sequences ‧ #{@current_workspace.name}") %>
 
-<div class="col-sm-7 center">
+<div class="col-sm-3"></div>
+<div class="col-sm-6">
   <% if @sequences.empty? %>
     <div class="row">
       <div class="col-sm-7 center">
@@ -22,7 +23,7 @@
         </div>
 
         <div class="col-sm-6">
-          <%= sequence.name %>
+          <%= link_to sequence.name, workspace_sequence_path(name: sequence.name) %>
         </div>
 
         <div class="col-sm-4">
@@ -36,3 +37,4 @@
     </div>
   <% end %>
 </div>
+<div class="col-sm-3"></div>

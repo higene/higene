@@ -1,0 +1,18 @@
+<div class="col-sm-2">
+  <%= location.source %>
+</div>
+<div class="col-sm-3">
+  <%= link_to location.reference, workspace_sequence_path(name: location.reference) %>
+</div>
+<div class="col-sm-2">
+  <%= location.loc_start %>
+</div>
+<div class="col-sm-2">
+  <%= location.loc_end %>
+</div>
+<div class="col-sm-1">
+  <%= location.strand %>
+</div>
+<div class="col-sm-1">
+  <%= location.phase %>
+</div>
