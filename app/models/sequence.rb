@@ -5,6 +5,7 @@ class Sequence
   key :name, :text
   column :type, :text, index: true
   column :sequence, :text
+  column :description, :text
   set :parents, :text
   set :children, :text
 end
