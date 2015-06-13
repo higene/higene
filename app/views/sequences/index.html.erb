@@ -1,7 +1,7 @@
 <%= title("Sequences ‧ #{@current_workspace.name}") %>
 
 <div class="col-sm-2"></div>
-<div class="col-sm-8">
+<div class="col-sm-7">
   <% if @sequences.empty? %>
     <div class="row">
       <div class="col-sm-7 center">
@@ -37,4 +37,8 @@
     </div>
   <% end %>
 </div>
-<div class="col-sm-2"></div>
+<div class="col-sm-3">
+  <% unless @sequences.empty? %>
+    <%= link_to fa_icon("upload lg", text: "Import sequences"), new_workspace_sequence_path, class: "btn btn-default"%>
+  <% end %>
+</div>
