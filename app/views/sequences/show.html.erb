@@ -10,6 +10,14 @@
     </h3>
   </div>
 
+  <% unless @sequence.description.nil? %>
+    <div class="row row-sequence-description">
+      <div class="col-sm-12">
+        <%= @sequence.description %>
+      </div>
+    </div>
+  <% end %>
+
   <div class="row">
     <div class="panel panel-default">
       <div class="panel-heading">
