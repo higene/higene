@@ -17,7 +17,7 @@ module Parser
 
       def initialize(options)
         options.each do |key, value|
-          send(key.to_s + "=", value)
+          send "#{key}=", value
         end
       end
     end
@@ -35,7 +35,7 @@ module Parser
         if callback.nil?
           value
         else
-          value.send(callback)
+          value.send callback
         end
       end
     end
@@ -54,7 +54,7 @@ module Parser
           data.last.split(";").each do |attr|
             key, value = attr.match(/(\w+) "(.+)"/).captures
             if attribute.respond_to? key.downcase
-              attribute.send("#{key.downcase}=", value)
+              attribute.send "#{key.downcase}=", value
             end
             attribute.id = value if key == "#{data[2].downcase}_id"
           end
