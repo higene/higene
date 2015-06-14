@@ -57,7 +57,7 @@ class SequencesController < ApplicationController
     else
       fail "Unsupport format."
     end
-
+    flash.notice = "The file #{params[:file].original_filename} was imported successfully."
     redirect_to workspace_sequences_url
   end
 
@@ -154,6 +154,81 @@ class SequencesController < ApplicationController
   end
 
   def create_gtf
+    slice_size = 1000
+    records = []
+
+    Parser::Gtf.parse params[:file].path do |record|
+      if record.attributes.id.nil?
+        record.attributes.id = [
+          record.type,
+          record.start,
+          record.end,
+          record.seqid
+        ].join "."
+      end
+      records << record
+    end
+
+    transcript_child_types = %w(start_codon stop_codon exon CDS intron)
+    records.each_slice(slice_size) do |slice|
+      cmd = ['BEGIN BATCH ']
+      slice.each do |record|
+        cmd << %(
+          INSERT INTO #{Location.table_name}
+            (#{Location.column_names.join(',')})
+          VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            #{CQL.quote(record.seqid)},
+            #{CQL.quote(record.type)},
+            #{CQL.quote(record.start)},
+            #{CQL.quote(record.end)},
+            #{CQL.quote(record.source)},
+            #{CQL.quote(record.attributes.id)},
+            #{CQL.quote(record.score)},
+            #{CQL.quote(record.strand)},
+            #{CQL.quote(record.phase)}
+          )
+        ;).squish
+
+        cmd << %(
+          INSERT INTO #{Sequence.table_name}
+            (workspace_id, name, type)
+          VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            #{CQL.quote(record.attributes.id)},
+            #{CQL.quote(record.type)}
+          )
+        ;).squish
+
+        cmd << %(
+          INSERT INTO #{Sequence.table_name}
+            (workspace_id, name, type)
+          VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            #{CQL.quote(record.seqid)},
+            'chromosome'
+          )
+        ;).squish
+
+        if transcript_child_types.include?(record.type) && record.attributes.transcript_id
+          cmd << %(
+            UPDATE #{Sequence.table_name}
+            SET parents = parents + {#{CQL.quote(record.attributes.transcript_id)}}
+            WHERE workspace_id = '#{@current_workspace.id}'
+            AND name = #{Cequel::Type.quote(record.attributes.id)}
+          ;).squish
+
+          cmd << %(
+            UPDATE #{Sequence.table_name}
+            SET children = children + {#{CQL.quote(record.attributes.id)}}
+            WHERE workspace_id = #{CQL.quote(@current_workspace.id.to_s)}
+            AND name = #{CQL.quote(record.attributes.transcript_id)}
+          ;).squish
+        end
+      end
+      cmd << "APPLY BATCH;"
+      Sequence.connection.execute(cmd.join)
+    end
   end
 
   def create_fasta
