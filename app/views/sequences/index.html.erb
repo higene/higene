@@ -18,15 +18,15 @@
     <% @sequences.each do |sequence| %>
       <div class="row">
         <div class="col-sm-2">
-          <%= sequence.type %>
+          <h5><%= sequence.type %></h5>
         </div>
 
         <div class="col-sm-6">
-          <%= link_to sequence.name, workspace_sequence_path(name: sequence.name) %>
+          <%= link_to content_tag(:h5, sequence.name), workspace_sequence_path(name: sequence.name) %>
         </div>
 
         <div class="col-sm-4">
-          <%= pluralize sequence.children.length, "child" %>, <%= pluralize sequence.parents.length, "parents" %>
+          <h4><small><%= pluralize sequence.children.length, "child" %>, <%= pluralize sequence.parents.length, "parents" %></small></h4>
         </div>
       </div>
     <% end %>
