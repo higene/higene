@@ -3,8 +3,10 @@ Rails.application.routes.draw do
 
   resources 'workspaces', path: 'w', format: false do
     resources 'sequences', param: :name,
-                           format: false,
-                           constraints: { name: %r{[^\/]+} }
+                           constraints: { name: %r{[^\/]+} } do
+      get 'download/:format', action: 'download',
+                              as: 'download'
+    end
   end
 
   devise_for :users, path: 'u', format: false

@@ -1,4 +1,4 @@
-require 'parser/gff'
+require 'parser'
 require 'cql'
 
 class SequencesController < ApplicationController
@@ -6,7 +6,7 @@ class SequencesController < ApplicationController
   before_action :find_workspace, only: [:new, :index, :create]
   before_action :find_workspaces, only: [:new]
   before_action :pager_params, only: [:index]
-  before_action :find_sequence, only: [:show]
+  before_action :find_sequence, only: [:show, :download]
 
   def index
     if !@before.nil?
@@ -46,11 +46,41 @@ class SequencesController < ApplicationController
     @workspaces
   end
 
+  def show
+  end
+
   def create
+    format = params[:format].downcase
+
+    if respond_to? "create_#{format}", true
+      send "create_#{format}"
+    else
+      fail "Unsupport format."
+    end
+
+    redirect_to workspace_sequences_url
+  end
+
+  def download
+    respond_to do |format|
+      format.fasta do
+        if @sequence.description.nil?
+          data = ">#{@sequence.name}\n#{@sequence.sequence}\n"
+        else
+          data = ">#{@sequence.name} #{@sequence.description}\n#{@sequence.sequence}\n"
+        end
+        send_data data, filename: "#{@sequence.name}.fasta"
+      end
+    end
+  end
+
+  private
+
+  def create_gff
     slice_size = 1000
     records = []
 
-    Gff.parse params[:file].path do |record|
+    Parser::Gff.parse params[:file].path do |record|
       if record.attributes.id.nil?
         record.attributes.id = [
           record.type,
@@ -121,13 +151,40 @@ class SequencesController < ApplicationController
       cmd << "APPLY BATCH;"
       Sequence.connection.execute(cmd.join)
     end
-    redirect_to workspace_sequences_url
   end
 
-  def show
+  def create_gtf
   end
 
-  private
+  def create_fasta
+    slice_size = 1000
+    records = []
+
+    Parser::Fasta.parse params[:file].path do |record|
+      records << record
+    end
+
+    records.each_slice(slice_size) do |slice|
+      cmd = ['BEGIN BATCH ']
+      slice.each do |record|
+        cmd << %(
+          INSERT INTO #{Sequence.table_name}
+            (workspace_id, name, description, sequence)
+          VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            #{CQL.quote(record.name)},
+            #{CQL.quote(record.description)},
+            #{CQL.quote(record.sequence)}
+          )
+        ;).squish
+      end
+      cmd << "APPLY BATCH;"
+      Sequence.connection.execute(cmd.join)
+    end
+  end
+
+  def create_expr
+  end
 
   def find_workspace
     workspace = Workspace.where(id: params[:workspace_id]).first
@@ -154,6 +211,7 @@ class SequencesController < ApplicationController
   end
 
   def find_sequence
-    @sequence = Sequence.find(params[:workspace_id], params[:name])
+    name = params[:name] || params[:sequence_name]
+    @sequence = Sequence.find(params[:workspace_id], name)
   end
 end

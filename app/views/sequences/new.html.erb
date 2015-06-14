@@ -29,7 +29,7 @@
           File Format
         </label>
         <div class="col-sm-8">
-          <select id="select_format" class="form-control">
+          <select id="select_format" name="format" class="form-control">
             <% @formats.each do |value, text| %>
               <%= content_tag :option, text, value: value %>
             <% end %>

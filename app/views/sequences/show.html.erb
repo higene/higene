@@ -1,7 +1,7 @@
 <%= title @sequence.name %>
 
-<div class="col-sm-2"></div>
-<div class="col-sm-8">
+<div class="col-sm-1"></div>
+<div class="col-sm-7">
   <div class="page-header">
     <h3><%= @sequence.name %>
       <% unless @sequence.type.nil? %>
@@ -107,4 +107,11 @@
     </div>
   </div>
 </div>
-<div class="col-sm-2"></div>
+<div class="col-sm-3 text-center">
+  <% if @sequence.sequence.nil? %>
+    <%= link_to fa_icon("download lg", text: "Download fasta"), "#", class: "btn btn-primary disabled"%>
+  <% else %>
+    <%= link_to fa_icon("download lg", text: "Download fasta"), workspace_sequence_download_path(sequence_name: @sequence.name, format: "fasta"), class: "btn btn-primary"%>
+  <% end %>
+</div>
+<div class="col-sm-1"></div>
