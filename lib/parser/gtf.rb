@@ -47,7 +47,7 @@ module Parser
           next if line.start_with? "#"
           data = line.split "\t"
           if data.length != Record.ncol
-            fail "Wrong number of columns (#{data.length} for #{GffRecord.ncol})."
+            fail "Wrong number of columns (#{data.length} for #{Record.ncol})."
           end
 
           attribute = Attribute.new
