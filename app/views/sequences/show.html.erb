@@ -34,8 +34,8 @@
 
         <% unless @sequence.parent_sequences.empty? %>
           <div class="row">
-            <div class="col-sm-12">
-              <h3><small>Parents</small></h3>
+            <div class="col-sm-12 text-capitalize">
+              <h3><small>parents</small></h3>
             </div>
           </div>
           <% @sequence.parent_sequences.each do |parent| %>
@@ -65,8 +65,8 @@
 
         <% unless @sequence.subsequences.empty? %>
           <div class="row">
-            <div class="col-sm-12">
-              <h3><small>Subsequences</small></h3>
+            <div class="col-sm-12 text-capitalize">
+              <h3><small>children</small></h3>
             </div>
           </div>
           <% @sequence.subsequences.each do |subseq| %>
