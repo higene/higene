@@ -43,7 +43,7 @@
         <% unless @sequence.parent_sequences.empty? %>
           <div class="row">
             <div class="col-sm-12 text-capitalize">
-              <h3><small>parents</small></h3>
+              <h3 class="panel-subtitle"><small>parents</small></h3>
             </div>
           </div>
           <% @sequence.parent_sequences.each do |parent| %>
@@ -74,7 +74,7 @@
         <% unless @sequence.subsequences.empty? %>
           <div class="row">
             <div class="col-sm-12 text-capitalize">
-              <h3><small>children</small></h3>
+              <h3 class="panel-subtitle"><small>children</small></h3>
             </div>
           </div>
           <% @sequence.subsequences.each do |subseq| %>
@@ -111,6 +111,22 @@
         <h3 class="panel-title text-capitalize">gene expression</h3>
       </div>
       <div class="panel-body">
+        <% unless @sequence.express_expressions.empty? %>
+          <div class="row">
+            <div class="col-sm-12">
+              <h3 class="panel-subtitle"><small>eXpress</small></h3>
+            </div>
+          </div>
+
+          <div class="row">
+            <%= render "xprs_header" %>
+          </div>
+          <% @sequence.express_expressions.each do |expression| %>
+            <div class="row">
+              <%= render "xprs_body", expression: expression %>
+            </div>
+          <% end %>
+        <% end %>
       </div>
     </div>
   </div>

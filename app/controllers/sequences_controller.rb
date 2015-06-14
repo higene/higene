@@ -40,7 +40,8 @@ class SequencesController < ApplicationController
     @formats = {
       gff: "Generic Feature Format (gff)",
       gtf: "General Transfer Format (gtf)",
-      fasta: "FASTA Format (fasta)"
+      fasta: "FASTA Format (fasta)",
+      xprs: "eXpress Target Abundances (xprs)"
     }
 
     @workspaces
@@ -258,7 +259,42 @@ class SequencesController < ApplicationController
     end
   end
 
-  def create_expr
+  def create_xprs
+    slice_size = 1000
+    records = []
+
+    Parser::Xprs.parse params[:file].path do |record|
+      records << record
+    end
+
+    records.each_slice(slice_size) do |slice|
+      cmd = ['BEGIN BATCH ']
+      slice.each do |record|
+        cmd << %(
+          INSERT INTO #{Expression.table_name} (
+            workspace_id,
+            source,
+            condition,
+            target,
+            fpkm,
+            tot_counts,
+            uniq_counts,
+            eff_counts
+          ) VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            'eXpress',
+            #{CQL.quote(params[:condition_name])},
+            #{CQL.quote(record.target_id)},
+            #{CQL.quote(record.fpkm)},
+            #{CQL.quote(record.tot_counts)},
+            #{CQL.quote(record.uniq_counts)},
+            #{CQL.quote(record.eff_counts)}
+          )
+        ;).squish
+      end
+      cmd << "APPLY BATCH;"
+      Expression.connection.execute(cmd.join)
+    end
   end
 
   def find_workspace

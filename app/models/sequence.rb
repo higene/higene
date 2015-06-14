@@ -36,4 +36,13 @@ class Sequence
     end
     @_subsequences
   end
+
+  def express_expressions
+    if @_express_expressions.nil?
+      @_express_expressions = Expression.where(workspace_id: workspace_id,
+                                               target: name,
+                                               source: "eXpress").to_a
+    end
+    @_express_expressions
+  end
 end
