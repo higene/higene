@@ -48,6 +48,10 @@ class SequencesController < ApplicationController
   end
 
   def show
+    if @sequence.nil?
+      flash.alert = "#{@name} does not exist."
+      redirect_to :back
+    end
   end
 
   def create
@@ -322,7 +326,8 @@ class SequencesController < ApplicationController
   end
 
   def find_sequence
-    name = params[:name] || params[:sequence_name]
-    @sequence = Sequence.find(params[:workspace_id], name)
+    @name = params[:name] || params[:sequence_name]
+    @sequence = Sequence.where(workspace_id: params[:workspace_id], name: @name)
+                .limit(1).first
   end
 end
