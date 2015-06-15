@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  root 'home#index'
+  root 'welcome#index'
 
   resources 'workspaces', path: 'w', format: false do
     resources 'sequences', param: :name,
