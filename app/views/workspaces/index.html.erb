@@ -18,7 +18,16 @@
       <% @workspaces.each do |workspace| %>
         <div class="row ws-row-title">
           <div class="col-sm-8">
-            <%= link_to content_tag(:h4, content_tag(:strong, workspace.name)), workspace_sequences_path(workspace.id), class: "text-info ws-list-name" %>
+            <% if workspace.owner.id == current_user.id %>
+              <%= link_to content_tag(:h4, content_tag(:strong, workspace.name)), workspace_sequences_path(workspace.id), class: "text-info ws-list-name" %>
+            <% else %>
+              <h4>
+                <strong>
+                  <%= workspace.owner.username %> &gt;
+                  <%= link_to workspace.name, workspace_sequences_path(workspace.id), class: "text-info ws-list-name" %>
+                </strong>
+              </h4>
+            <% end %>
           </div>
           <div class="col-sm-4 text-right">
             <span class="ws-list-star"><%= fa_icon("star") %> 0</span>
