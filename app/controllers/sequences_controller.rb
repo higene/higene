@@ -295,6 +295,15 @@ class SequencesController < ApplicationController
             #{CQL.quote(record.eff_counts)}
           )
         ;).squish
+
+        cmd << %(
+          INSERT INTO #{Sequence.table_name} (
+            workspace_id, name
+          ) VALUES (
+            #{CQL.quote(@current_workspace.id.to_s)},
+            #{CQL.quote(record.target_id)}
+          )
+        ;).squish
       end
       cmd << "APPLY BATCH;"
       Expression.connection.execute(cmd.join)
