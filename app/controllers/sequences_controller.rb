@@ -111,6 +111,7 @@ class SequencesController < ApplicationController
             #{CQL.quote(record.end)},
             #{CQL.quote(record.source)},
             #{CQL.quote(record.attributes.id)},
+            #{CQL.quote(record.attributes.parent)},
             #{CQL.quote(record.score)},
             #{CQL.quote(record.strand)},
             #{CQL.quote(record.phase)}
@@ -136,22 +137,6 @@ class SequencesController < ApplicationController
             'chromosome'
           )
         ;).squish
-
-        unless record.attributes.parent.nil?
-          cmd << %(
-            UPDATE #{Sequence.table_name}
-            SET parents = parents + {#{CQL.quote(record.attributes.parent)}}
-            WHERE workspace_id = '#{@current_workspace.id}'
-            AND name = #{Cequel::Type.quote(record.attributes.id)}
-          ;).squish
-
-          cmd << %(
-            UPDATE #{Sequence.table_name}
-            SET children = children + {#{CQL.quote(record.attributes.id)}}
-            WHERE workspace_id = #{CQL.quote(@current_workspace.id.to_s)}
-            AND name = #{CQL.quote(record.attributes.parent)}
-          ;).squish
-        end
       end
       cmd << "APPLY BATCH;"
       Sequence.connection.execute(cmd.join)
@@ -178,6 +163,12 @@ class SequencesController < ApplicationController
     records.each_slice(slice_size) do |slice|
       cmd = ['BEGIN BATCH ']
       slice.each do |record|
+        if transcript_child_types.include?(record.type) && record.attributes.transcript_id
+          parent = record.attributes.transcript_id
+        else
+          parent = nil
+        end
+
         cmd << %(
           INSERT INTO #{Location.table_name}
             (#{Location.column_names.join(',')})
@@ -189,6 +180,7 @@ class SequencesController < ApplicationController
             #{CQL.quote(record.end)},
             #{CQL.quote(record.source)},
             #{CQL.quote(record.attributes.id)},
+            #{CQL.quote(parent)},
             #{CQL.quote(record.score)},
             #{CQL.quote(record.strand)},
             #{CQL.quote(record.phase)}
@@ -214,22 +206,6 @@ class SequencesController < ApplicationController
             'chromosome'
           )
         ;).squish
-
-        if transcript_child_types.include?(record.type) && record.attributes.transcript_id
-          cmd << %(
-            UPDATE #{Sequence.table_name}
-            SET parents = parents + {#{CQL.quote(record.attributes.transcript_id)}}
-            WHERE workspace_id = '#{@current_workspace.id}'
-            AND name = #{Cequel::Type.quote(record.attributes.id)}
-          ;).squish
-
-          cmd << %(
-            UPDATE #{Sequence.table_name}
-            SET children = children + {#{CQL.quote(record.attributes.id)}}
-            WHERE workspace_id = #{CQL.quote(@current_workspace.id.to_s)}
-            AND name = #{CQL.quote(record.attributes.transcript_id)}
-          ;).squish
-        end
       end
       cmd << "APPLY BATCH;"
       Sequence.connection.execute(cmd.join)

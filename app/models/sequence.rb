@@ -7,34 +7,41 @@ class Sequence
   column :type, :text, index: true
   column :sequence, :text
   column :description, :text
-  set :parents, :text
-  set :children, :text
 
   def locations
-    if @_locations.nil?
-      @_locations = Location.where(workspace_id: workspace_id, target: name).to_a
-    end
-    @_locations
+    Location.where(workspace_id: workspace_id, target: name).to_a
   end
 
-  def parent_sequences
-    if @_parent_sequences.nil?
-      @_parent_sequences = []
-      parents.each do |parent|
-        @_parent_sequences << Sequence.find(workspace_id, parent)
+  def parents
+    if @_parents.nil?
+      parent_names = Location.select(:parent)
+                     .where(workspace_id: workspace_id, target: name)
+                     .collect(&:parent)
+                     .uniq
+      if parent_names.first.nil?
+        @_parents = []
+      else
+        @_parents = Sequence.where(workspace_id: workspace_id,
+                                   name: parent_names).to_a
       end
     end
-    @_parent_sequences
+    @_parents
   end
 
-  def subsequences
-    if @_subsequences.nil?
-      @_subsequences = []
-      children.each do |child|
-        @_subsequences << Sequence.find(workspace_id, child)
+  def children
+    if @_children.nil?
+      child_names = Location.select(:target)
+                    .where(workspace_id: workspace_id, parent: name)
+                    .collect(&:target)
+                    .uniq
+      if child_names.first.nil?
+        @_children = []
+      else
+        @_children = Sequence.where(workspace_id: workspace_id,
+                                    name: child_names).to_a
       end
     end
-    @_subsequences
+    @_children
   end
 
   def express_expressions

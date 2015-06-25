@@ -40,14 +40,14 @@
           <% end %>
         <% end %>
 
-        <% unless @sequence.parent_sequences.empty? %>
+        <% unless @sequence.parents.empty? %>
           <div class="row">
             <div class="col-sm-12 text-capitalize">
               <h3 class="panel-subtitle"><small>parents</small></h3>
             </div>
           </div>
-          <% @sequence.parent_sequences.each do |parent| %>
-            <% unless parent.name == @sequence.parent_sequences.first.name %>
+          <% @sequence.parents.each do |parent| %>
+            <% unless parent.name == @sequence.parents.first.name %>
               <div class="row">
                 <div class="col-sm-12">
                   <hr>
@@ -71,14 +71,14 @@
           <% end %>
         <% end %>
 
-        <% unless @sequence.subsequences.empty? %>
+        <% unless @sequence.children.empty? %>
           <div class="row">
             <div class="col-sm-12 text-capitalize">
               <h3 class="panel-subtitle"><small>children</small></h3>
             </div>
           </div>
-          <% @sequence.subsequences.each do |subseq| %>
-            <% unless subseq.name == @sequence.subsequences.first.name %>
+          <% @sequence.children.each do |child| %>
+            <% unless child.name == @sequence.children.first.name %>
               <div class="row">
                 <div class="col-sm-12">
                   <hr>
@@ -87,14 +87,14 @@
             <% end %>
             <div class="row">
               <div class="col-sm-12">
-                <p><%= link_to subseq.name, workspace_sequence_path(name: subseq.name) %></p>
+                <p><%= link_to child.name, workspace_sequence_path(name: child.name) %></p>
               </div>
             </div>
             <div class="row">
               <%= render "genome_position_header" %>
             </div>
 
-            <% subseq.locations.each do |location| %>
+            <% child.locations.each do |location| %>
               <div class="row">
                 <%= render "genome_position_body", location: location %>
               </div>

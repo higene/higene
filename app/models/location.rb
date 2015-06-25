@@ -8,6 +8,7 @@ class Location
   key :loc_end, :int
   key :source, :text
   column :target, :text, index: true
+  column :parent, :text, index: true
   column :score, :float
   column :strand, :text
   column :phase, :int
