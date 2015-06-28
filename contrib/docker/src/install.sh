@@ -17,6 +17,7 @@ cd ruby-2.1.5
 make install
 cd ..
 rm -rf ruby-2.1.5
+gem update --system
 
 # Install passenger and nginx
 gem install passenger -v 5.0.10
