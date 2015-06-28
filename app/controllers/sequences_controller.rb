@@ -9,29 +9,45 @@ class SequencesController < ApplicationController
   before_action :find_sequence, only: [:show, :download]
 
   def index
+    @type = params[:type]
+    q = { workspace_id: @current_workspace.id }
+    q.update type: @type if @type
+
     if !@before.nil?
-      @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .before(@before).limit(@limit).reverse.to_a.reverse
+      @sequences = Sequence.where(q).before(@before).limit(@limit).reverse.to_a.reverse
     elsif !@after.nil?
-      @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .after(@after).limit(@limit).to_a
+      @sequences = Sequence.where(q).after(@after).limit(@limit).to_a
     else
-      @sequences = Sequence.where(workspace_id: @current_workspace.id)
-                   .first(@limit).to_a
+      @sequences = Sequence.where(q).first(@limit).to_a
     end
 
     unless @sequences.empty?
-      unless (Sequence.where(workspace_id: @current_workspace.id)
-               .before(@sequences.first.name).limit(1).to_a.empty?)
+      unless Sequence.where(q).before(@sequences.first.name).limit(1).to_a.empty?
         @previous_url = "#{workspace_sequences_url}?" \
                         "limit=#{@limit}&" \
                         "before=#{CGI.escape(@sequences.first.name)}"
+        @previous_url << "&type=#{@type}" if @type
       end
-      unless (Sequence.where(workspace_id: @current_workspace.id)
-               .after(@sequences.last.name).limit(1).to_a.empty?)
+      unless Sequence.where(q).after(@sequences.last.name).limit(1).to_a.empty?
         @next_url = "#{workspace_sequences_url}?" \
                     "limit=#{@limit}&" \
                     "after=#{CGI.escape(@sequences.last.name)}"
+        @next_url << "&type=#{@type}" if @type
+      end
+    end
+
+    cmd = %(
+      SELECT type
+      FROM sequences
+      WHERE workspace_id = #{CQL.quote(@current_workspace.id.to_s)}
+    ;).squish
+
+    @type_summary = {}
+    Sequence.connection.execute(cmd).collect { |x| x["type"] }.each do |t|
+      if @type_summary.key? t
+        @type_summary[t] += 1
+      else
+        @type_summary[t] = 1
       end
     end
   end

@@ -56,5 +56,30 @@
     <%= link_to fa_icon("upload lg", text: "Import data"), new_workspace_sequence_path, class: "btn btn-primary btn-block"%>
   </div>
 
+  <% unless @type_summary.empty? %>
+    <div class=row><hr></div>
+    <div class="row row-type-filter text-left">
+      <div class="row type-filter-title">
+        Types
+      </div>
+      <div class="row">
+        <% if @type.nil? %>
+          <%= "all (#{@type_summary.values.sum})" %>
+        <% else %>
+          <%= link_to "all (#{@type_summary.values.sum})", workspace_sequences_path %>
+        <% end %>
+      </div>
+      <% @type_summary.each do |type, total_number| %>
+        <div class="row">
+          <% if type == @type %>
+            <%= "#{type} (#{total_number})" %>
+          <% else %>
+            <%= link_to "#{type} (#{total_number})", workspace_sequences_path(type: type) %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
 </div>
 <div class="col-sm-1"></div>
