@@ -8,7 +8,8 @@ initialize() {
 
   git clone -b "${GIT_BRANCH}" https://github.com/jlhg/higene.git /opt/higene
   cd /opt/higene
-  cp -f /mnt/src/mongoid.yml config/mongoid.yml
+  cp -f /mnt/src/database.yml config/database.yml
+  cp -f /mnt/src/cequel.yml config/cequel.yml
 
   bundle install
   bin/rake tmp:create
@@ -16,14 +17,13 @@ initialize() {
   bin/rake db:create
   bin/rake db:migrate
   bin/rake db:seed
-
-  if test "${RAILS_ENV}" = "production"; then
-    bin/rake assets:precompile
-    echo "export SECRET_KEY_BASE=$(bin/rake secret)" >> ~/.bash_profile
-    . ~/.bash_profile
-  fi
-
-  mkdir -p -m 777 tmp/cache/assets
+  bin/rake cequel:keyspace:create
+  bin/rake cequel:migrate
+  bin/rake assets:precompile
+  mkdir -p tmp
+  chmod 777 -R tmp
+  echo "export SECRET_KEY_BASE=$(bin/rake secret)" >> ~/.bash_profile
+  . ~/.bash_profile
 }
 
 if test ! -d /opt/higene; then

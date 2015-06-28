@@ -1,0 +1,36 @@
+development:
+  host: db2
+  port: 9042
+  keyspace: higene_development
+  max_retries: 3
+  retry_delay: 0.5
+  newrelic: false
+
+test:
+  host: db2
+  port: 9042
+  keyspace: higene_test
+  max_retries: 3
+  retry_delay: 0.5
+  newrelic: false
+
+production:
+  hosts:
+    - 'cass1.higene.biz'
+    - 'cass2.higene.biz'
+    - 'cass3.higene.biz'
+  port: 9042
+  keyspace: higene_production
+  username: 'myappuser'
+  password: 'password1'
+  max_retries: 3
+  retry_delay: 0.5
+  newrelic: true
+  replication:
+    class: SimpleStrategy
+    replication_factor: 1
+# replication:
+#   class: NetworkTopologyStrategy
+#   datacenter1: 3
+#   datacenter2: 2
+# durable_writes: false

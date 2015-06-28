@@ -19,7 +19,8 @@ cd ..
 rm -rf ruby-2.1.5
 
 # Install passenger and nginx
-gem install passenger bundler
+gem install passenger -v 5.0.10
+gem install bundler -v 1.10.3
 passenger-install-nginx-module --auto-download \
                                --languages ruby \
                                --auto
