@@ -213,16 +213,24 @@ class SequencesController < ApplicationController
   end
 
   def create_fasta
-    slice_size = 1000
-    records = []
-
+    slices = []
+    slice = []
+    slice_max_seqlen = 4 * 1024 * 1024
+    slice_seqlen = 0
     Parser::Fasta.parse params[:file].path do |record|
-      records << record
+      slice << record
+      slice_seqlen += record.sequence.length
+      if slice_seqlen > slice_max_seqlen
+        slices << slice
+        slice_seqlen = 0
+        slice = []
+      end
     end
+    slices << slice unless slice.empty?
 
-    records.each_slice(slice_size) do |slice|
+    slices.each do |s|
       cmd = ['BEGIN BATCH ']
-      slice.each do |record|
+      s.each do |record|
         cmd << %(
           INSERT INTO #{Sequence.table_name}
             (workspace_id, name, description, sequence)
