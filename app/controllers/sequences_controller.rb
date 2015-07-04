@@ -13,21 +13,13 @@ class SequencesController < ApplicationController
     q = { workspace_id: @current_workspace.id }
     q.update type: @type if @type
 
-    if !@before.nil?
-      @sequences = Sequence.where(q).before(@before).limit(@limit).reverse.to_a.reverse
-    elsif !@after.nil?
-      @sequences = Sequence.where(q).after(@after).limit(@limit).to_a
-    else
+    if @after.nil?
       @sequences = Sequence.where(q).first(@limit).to_a
+    else
+      @sequences = Sequence.where(q).after(@after).limit(@limit).to_a
     end
 
     unless @sequences.empty?
-      unless Sequence.where(q).before(@sequences.first.name).limit(1).to_a.empty?
-        @previous_url = "#{workspace_sequences_url}?" \
-                        "limit=#{@limit}&" \
-                        "before=#{CGI.escape(@sequences.first.name)}"
-        @previous_url << "&type=#{@type}" if @type
-      end
       unless Sequence.where(q).after(@sequences.last.name).limit(1).to_a.empty?
         @next_url = "#{workspace_sequences_url}?" \
                     "limit=#{@limit}&" \
@@ -340,7 +332,6 @@ class SequencesController < ApplicationController
     @limit = params[:limit].to_i
     @limit = 10 if @limit <= 0 || @limit > 100
     @after = params[:after]
-    @before = params[:before]
   end
 
   def find_sequence

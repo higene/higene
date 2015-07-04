@@ -12,9 +12,7 @@
     </div>
   <% else %>
     <h3 class="text-center"><%= @current_workspace.name %></h3>
-    <div class="row">
-      <%= render "shared/pager" %>
-    </div>
+    <hr>
     <% @sequences.each do |sequence| %>
       <div class="row">
         <div class="col-sm-2">
