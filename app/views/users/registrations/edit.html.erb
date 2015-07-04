@@ -1,0 +1,70 @@
+<div class="col-sm-4 center">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Edit Profile</h3>
+    </div>
+    <div class="panel-body">
+      <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+        <%= form_field_error resource, :current_password %>
+
+        <h4>Change your basic account</h4>
+        <hr>
+        <div class="form-group">
+          <%= f.label :username %>
+          <%= f.text_field :username, class: "form-control", autofocus: true %>
+          <%= form_field_error resource, :username %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :email %>
+          <%= f.email_field :email, class: "form-control", autofocus: true %>
+          <%= form_field_error resource, :email %>
+        </div>
+
+        <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+          <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+        <% end %>
+
+        <br>
+        <h4>Change password</h4>
+        <hr>
+        <div class="form-group">
+          <%= f.label :password, "New Password" %> <br>
+          <%= f.password_field :password, class: "form-control", autocomplete: "off" %>
+          <%= form_field_error resource, :password %>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :password_confirmation %>
+          <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "off" %>
+          <%= form_field_error resource, :password_confirmation %>
+        </div>
+
+        <div class="pull-right">
+          <%= button_tag "Save changes", type: "button", class: "btn btn-info", data: { toggle: "modal", target: "#validate_current_password" } %>
+        </div>
+
+        <div class="modal fade" id="validate_current_password" tabindex="-1" role="dialog" aria-labelledby="password_prompt" aria-hidden="true">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <%= button_tag "<span aria-hidden=\"true\">&times;</span>".html_safe, type: "button", class: "close", data: { dismiss: "modal" }, aria: { label: "Close" } %>
+                <h4 class="modal-title" id="password_prompt">Enter your current password</h4>
+              </div>
+              <div class="modal-body">
+                <div class="form-group">
+                  <%= f.label :current_password, class: "sr-only" %>
+                  <%= f.password_field :current_password, class: "form-control", autocomplete: "off" %>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <%= button_tag "Close", class: "btn btn-default", data: { dismiss: "modal" } %>
+                <%= f.submit "Save changes", class: "btn btn-info" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+<%= title @sequence.name %>
+
+<div class="col-sm-1"></div>
+<div class="col-sm-7">
+  <div class="page-header">
+    <h3><%= @sequence.name %>
+      <% unless @sequence.type.nil? %>
+        <small>[<%= @sequence.type %>]</small>
+      <% end %>
+    </h3>
+  </div>
+
+  <% unless @sequence.description.nil? %>
+    <div class="row row-sequence-description">
+      <div class="col-sm-12">
+        <%= @sequence.description %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title text-capitalize">genome position</h3>
+      </div>
+      <div class="panel-body">
+        <% unless @sequence.locations.empty? %>
+          <div class="row">
+            <%= render "genome_position_header" %>
+          </div>
+          <% @sequence.locations.each do |location| %>
+            <div class="row">
+              <%= render "genome_position_body", location: location %>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <hr>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <% unless @sequence.parents.empty? %>
+          <div class="row">
+            <div class="col-sm-12 text-capitalize">
+              <h3 class="panel-subtitle"><small>parents</small></h3>
+            </div>
+          </div>
+          <% @sequence.parents.each do |parent| %>
+            <% unless parent.name == @sequence.parents.first.name %>
+              <div class="row">
+                <div class="col-sm-12">
+                  <hr>
+                </div>
+              </div>
+            <% end %>
+            <div class="row">
+              <div class="col-sm-12">
+                <h5><%= link_to parent.name, workspace_sequence_path(name: parent.name) %></h5>
+              </div>
+            </div>
+            <div class="row">
+              <%= render "genome_position_header" %>
+            </div>
+
+            <% parent.locations.each do |location| %>
+              <div class="row">
+                <%= render "genome_position_body", location: location %>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <% unless @sequence.children.empty? %>
+          <div class="row">
+            <div class="col-sm-12 text-capitalize">
+              <h3 class="panel-subtitle"><small>children</small></h3>
+            </div>
+          </div>
+          <% @sequence.children.each do |child| %>
+            <% unless child.name == @sequence.children.first.name %>
+              <div class="row">
+                <div class="col-sm-12">
+                  <hr>
+                </div>
+              </div>
+            <% end %>
+            <div class="row">
+              <div class="col-sm-12">
+                <p><%= link_to child.name, workspace_sequence_path(name: child.name) %></p>
+              </div>
+            </div>
+            <div class="row">
+              <%= render "genome_position_header" %>
+            </div>
+
+            <% child.locations.each do |location| %>
+              <div class="row">
+                <%= render "genome_position_body", location: location %>
+              </div>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title text-capitalize">gene expression</h3>
+      </div>
+      <div class="panel-body">
+        <% unless @sequence.express_expressions.empty? %>
+          <div class="row">
+            <div class="col-sm-12">
+              <h3 class="panel-subtitle"><small>eXpress</small></h3>
+            </div>
+          </div>
+
+          <div class="row">
+            <%= render "xprs_header" %>
+          </div>
+          <% @sequence.express_expressions.each do |expression| %>
+            <div class="row">
+              <%= render "xprs_body", expression: expression %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="col-sm-1"></div>
+<div class="col-sm-2 text-center">
+  <div class="row row-operation">
+    <% if @sequence.sequence.nil? %>
+      <%= link_to fa_icon("download lg", text: "Download fasta"), "#", class: "btn btn-primary btn-block disabled"%>
+    <% else %>
+      <%= link_to fa_icon("download lg", text: "Download fasta"),
+                  workspace_sequence_download_path(sequence_name: @sequence.name, format: "fasta"),
+                  class: "btn btn-primary btn-block"%>
+    <% end %>
+  </div>
+</div>
+<div class="col-sm-1"></div>

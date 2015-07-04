@@ -1,0 +1,62 @@
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "font-awesome";
+
+.center {
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tooltip-inner {
+    white-space: pre;
+    max-width: none;
+}
+
+.navbar a.btn {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  margin-left: 6px;
+  margin-right: 6px;
+  height: 34px;
+  vertical-align: middle;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  min-height: 34px;
+}
+
+.navbar a.btn-success {
+  color: #fff !important;
+}
+
+.navbar a.btn-success:hover, a.btn-success.focus, a.btn-success.active {
+  background-color: #449d44 !important;
+  border-color: #398439 !important;
+}
+
+.main {
+  padding-top: 17px;
+}
+
+.alert-alert {
+  @extend .alert-danger;
+
+}
+
+.alert-notice {
+  @extend .alert-success;
+}
+
+.popover {
+  max-width: 100%;
+}
+
+.popover-content {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}

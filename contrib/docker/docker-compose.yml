@@ -1,0 +1,17 @@
+web:
+  build: .
+  command: /mnt/src/start_service.sh
+  links:
+   - db1
+   - db2
+  ports:
+   - "8000:8000"
+  volumes:
+   - src:/mnt/src
+  environment:
+    RAILS_ENV: development
+    GIT_BRANCH: development
+db1:
+  image: postgres:9
+db2:
+  image: cassandra:2.1
