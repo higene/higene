@@ -71,10 +71,12 @@
       </div>
       <% @type_summary.each do |type, total_number| %>
         <div class="row">
-          <% if type == @type %>
-            <%= "#{type} (#{total_number})" %>
-          <% else %>
-            <%= link_to "#{type} (#{total_number})", workspace_sequences_path(type: type) %>
+          <% unless type.nil? %>
+            <% if type == @type %>
+              <%= "#{type} (#{total_number})" %>
+            <% elsif !type.nil? %>
+              <%= link_to "#{type} (#{total_number})", workspace_sequences_path(type: type) %>
+            <% end %>
           <% end %>
         </div>
       <% end %>

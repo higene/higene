@@ -43,11 +43,20 @@ class SequencesController < ApplicationController
     ;).squish
 
     @type_summary = {}
-    Sequence.connection.execute(cmd).collect { |x| x["type"] }.each do |t|
-      if @type_summary.key? t
-        @type_summary[t] += 1
+
+    records = Sequence.connection.execute(cmd)
+    loop do
+      records.collect { |x| x["type"] }.each do |type|
+        if @type_summary.key? type
+          @type_summary[type] += 1
+        else
+          @type_summary[type] = 1
+        end
+      end
+      if records.last_page?
+        break
       else
-        @type_summary[t] = 1
+        records = records.next_page
       end
     end
   end
