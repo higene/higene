@@ -44,7 +44,7 @@ module Parser
       File.open filename do |f|
         f.each do |line|
           line.strip!
-          next if line.start_with? "#"
+          next if line.start_with?("#") || line.empty?
           data = line.split "\t"
           if data.length != Record.ncol
             fail "Wrong number of columns (#{data.length} for #{Record.ncol})."

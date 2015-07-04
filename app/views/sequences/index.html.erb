@@ -12,9 +12,7 @@
     </div>
   <% else %>
     <h3 class="text-center"><%= @current_workspace.name %></h3>
-    <div class="row">
-      <%= render "shared/pager" %>
-    </div>
+    <hr>
     <% @sequences.each do |sequence| %>
       <div class="row">
         <div class="col-sm-2">
@@ -71,10 +69,12 @@
       </div>
       <% @type_summary.each do |type, total_number| %>
         <div class="row">
-          <% if type == @type %>
-            <%= "#{type} (#{total_number})" %>
-          <% else %>
-            <%= link_to "#{type} (#{total_number})", workspace_sequences_path(type: type) %>
+          <% unless type.nil? %>
+            <% if type == @type %>
+              <%= "#{type} (#{total_number})" %>
+            <% elsif !type.nil? %>
+              <%= link_to "#{type} (#{total_number})", workspace_sequences_path(type: type) %>
+            <% end %>
           <% end %>
         </div>
       <% end %>
