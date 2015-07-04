@@ -1,7 +1,7 @@
 ## Welcome to HiGene
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](http://www.opensource.org/licenses/MIT)
-[![Slack](http://joinslack.higene.io/badge.svg)](http://joinslack.higene.io/)
+[![Slack](https://img.shields.io/badge/slack-JOIN_CHAT-red.svg)](http://joinslack.higene.io/)
 
 HiGene is an open source, web-based next-generation sequencing (NGS) data
 hosting platform.
@@ -20,4 +20,3 @@ Join our [Slack channel](http://joinslack.higene.io/) if you have any feedback, 
 ## License
 
 HiGene is released under the [MIT license](http://www.opensource.org/licenses/MIT).
-
