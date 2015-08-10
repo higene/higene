@@ -1,0 +1,11 @@
+root:
+  name: root
+  workspace: w1
+
+human:
+  name: human
+  workspace: w1
+
+yeast:
+  name: yeast
+  workspace: w2

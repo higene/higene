@@ -1,8 +1,10 @@
 class Workspace < ActiveRecord::Base
   has_many :members, dependent: :destroy
+  has_many :namespaces, dependent: :destroy
   validates :name, presence: true
   validate :unique_name
   validate :unique_owner
+  after_create :create_default_namespace
   before_destroy :destroy_data
 
   def owner
@@ -44,6 +46,10 @@ class Workspace < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def create_default_namespace
+    Namespace.create(name: 'root', workspace: self)
   end
 
   def destroy_data

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150618093653) do
+ActiveRecord::Schema.define(version: 20150713154123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,6 +26,14 @@ ActiveRecord::Schema.define(version: 20150618093653) do
 
   add_index "members", ["user_id"], name: "index_members_on_user_id", using: :btree
   add_index "members", ["workspace_id"], name: "index_members_on_workspace_id", using: :btree
+
+  create_table "namespaces", force: :cascade do |t|
+    t.integer "workspace_id"
+    t.string  "name",         null: false
+  end
+
+  add_index "namespaces", ["workspace_id", "name"], name: "index_namespaces_on_workspace_id_and_name", unique: true, using: :btree
+  add_index "namespaces", ["workspace_id"], name: "index_namespaces_on_workspace_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
