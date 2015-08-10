@@ -12,3 +12,8 @@ m3:
   role: owner
   user: jeffrey
   workspace: w2
+
+m4:
+  role: owner
+  user: bill
+  workspace: w3

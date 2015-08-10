@@ -5,3 +5,7 @@ bill:
 jeffrey:
   username: Jeffrey
   email: jeffrey@higene.io
+
+hunter:
+  username: hunter
+  email: hunter@higene.io
