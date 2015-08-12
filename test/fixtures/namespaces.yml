@@ -1,11 +1,14 @@
 root:
   name: root
   workspace: w1
+  trashed: false
 
 human:
   name: human
   workspace: w1
+  trashed: false
 
 yeast:
   name: yeast
   workspace: w2
+  trashed: false

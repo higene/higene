@@ -1,9 +1,12 @@
 w1:
   name: workspace 1
   description: This is workspace 1
+  trashed: false
 
 w2:
   name: workspace 2
+  trashed: false
 
 w3:
   name: workspace 3
+  trashed: false

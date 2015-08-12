@@ -29,7 +29,7 @@ class NamespacesController < ApplicationController
   end
 
   def destroy
-    if @namespace.destroy
+    if @namespace.update trashed: true
       render json: @namespace and return
     end
 

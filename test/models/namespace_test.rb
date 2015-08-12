@@ -25,16 +25,4 @@ class NamespaceTest < ActiveSupport::TestCase
     assert_not namespaces(:root).update name: "updated_namespace",
                                         workspace: workspaces(:w1)
   end
-
-  test "should destroy if name is not default name" do
-    assert namespaces(:human).destroy
-  end
-
-  test "should not destroy if name is default name" do
-    assert_not namespaces(:root).destroy
-  end
-
-  test "should delete all records" do
-    assert_equal Namespace.where(workspace: workspaces(:w1)).delete_all, 2
-  end
 end

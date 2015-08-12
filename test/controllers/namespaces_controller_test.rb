@@ -68,6 +68,7 @@ class NamespacesControllerTest < ActionController::TestCase
     delete :destroy, workspace_id: @workspace, id: @namespace
     assert_response :success
     assert_not_nil assigns(:namespace)
+    assert assigns(:namespace).trashed
   end
 
   test "should not delete destroy when default namespace" do
