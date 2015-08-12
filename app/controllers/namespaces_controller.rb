@@ -13,7 +13,7 @@ class NamespacesController < ApplicationController
       render json: @namespace and return
     end
 
-    render json: { errors: @namespace.errors }, status: :bad_request
+    render json: { error: @namespace.errors }, status: :bad_request
   end
 
   def show
@@ -25,7 +25,7 @@ class NamespacesController < ApplicationController
       render json: @namespace and return
     end
 
-    render json: { errors: @namespace.errors }, status: :bad_request
+    render json: { error: @namespace.errors }, status: :bad_request
   end
 
   def destroy
@@ -33,7 +33,7 @@ class NamespacesController < ApplicationController
       render json: @namespace and return
     end
 
-    render json: { errors: @namespace.errors }, status: :bad_request
+    render json: { error: @namespace.errors }, status: :bad_request
   end
 
   def index
@@ -44,17 +44,30 @@ class NamespacesController < ApplicationController
   def find_workspace
     @member = Member.find_by user: current_user,
                              workspace_id: params[:workspace_id]
-    @workspace = @member.workspace
+    if @member
+      @workspace = @member.workspace
+    else
+      render json: { error: "invalid workspace" },
+             status: :bad_request and return
+    end
   end
 
   def find_namespace
     find_workspace
-    @namespace = Namespace.find_by id: params[:id],
-                                   workspace: @workspace
+    return unless @workspace
+
+    @namespace = Namespace.find_by(id: params[:id],
+                                   workspace: @workspace,
+                                   trashed: false)
+    unless @namespace
+      render(json: { error: "invalid namespace" },
+             status: :bad_request) and return
+    end
   end
 
   def find_namespaces
     find_workspace
-    @namespaces = Namespace.where(workspace: @workspace)
+    @namespaces = Namespace.where(workspace: @workspace,
+                                  trashed: false)
   end
 end

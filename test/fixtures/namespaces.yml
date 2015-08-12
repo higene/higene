@@ -8,6 +8,11 @@ human:
   workspace: w1
   trashed: false
 
+fly:
+  name: fly
+  workspace: w1
+  trashed: true
+
 yeast:
   name: yeast
   workspace: w2
