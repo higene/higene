@@ -13,7 +13,7 @@ class NamespacesController < ApplicationController
       render json: @namespace and return
     end
 
-    render json: { error: @namespace.errors }, status: :bad_request
+    render json: error(@namespace.errors), status: :bad_request
   end
 
   def show
@@ -25,7 +25,7 @@ class NamespacesController < ApplicationController
       render json: @namespace and return
     end
 
-    render json: { error: @namespace.errors }, status: :bad_request
+    render json: error(@namespace.errors), status: :bad_request
   end
 
   def destroy
@@ -33,7 +33,7 @@ class NamespacesController < ApplicationController
       render json: @namespace and return
     end
 
-    render json: { error: @namespace.errors }, status: :bad_request
+    render json: error(@namespace.errors), status: :bad_request
   end
 
   def index
@@ -47,7 +47,7 @@ class NamespacesController < ApplicationController
     if @member
       @workspace = @member.workspace
     else
-      render json: { error: "invalid workspace" },
+      render json: error("invalid workspace"),
              status: :bad_request and return
     end
   end
@@ -60,7 +60,7 @@ class NamespacesController < ApplicationController
                                    workspace: @workspace,
                                    trashed: false)
     unless @namespace
-      render(json: { error: "invalid namespace" },
+      render(json: error("invalid namespace"),
              status: :bad_request) and return
     end
   end

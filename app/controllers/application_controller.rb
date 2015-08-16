@@ -10,4 +10,8 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:sign_up) << [:username, :email]
     devise_parameter_sanitizer.for(:account_update) << [:username, :email]
   end
+
+  def error(message)
+    { error: message }
+  end
 end
