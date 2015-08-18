@@ -3,6 +3,12 @@ class WorkspacesController < ApplicationController
   before_action :find_workspace, only: [:show, :update, :destroy]
   respond_to :json
 
+  def new
+  end
+
+  def edit
+  end
+
   def create
     member = Member.new(role: "owner", user: current_user)
     if member.valid?

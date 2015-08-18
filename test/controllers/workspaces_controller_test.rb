@@ -171,4 +171,14 @@ class WorkspacesControllerTest < ActionController::TestCase
     delete :destroy, id: @workspace_w2
     assert_response :bad_request
   end
+
+  test "should redirect new when not logged in" do
+    get :new
+    assert_redirected_to new_user_session_path
+  end
+
+  test "should redirect edit when not logged in" do
+    get :edit, id: @workspace
+    assert_redirected_to new_user_session_path
+  end
 end
