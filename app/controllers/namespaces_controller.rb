@@ -1,6 +1,6 @@
 class NamespacesController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_namespace, only: [:show, :edit, :update, :destroy]
+  before_action :find_namespace, only: [:show, :update, :destroy]
   before_action :find_namespaces, only: [:index]
   before_action :find_workspace, only: [:create]
   respond_to :json
