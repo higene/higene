@@ -17,3 +17,8 @@ m4:
   role: owner
   user: bill
   workspace: w3
+
+m5:
+  role: viewer
+  user: tom
+  workspace: w1

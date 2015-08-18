@@ -1,54 +1,53 @@
 class WorkspacesController < ApplicationController
   before_action :authenticate_user!
-  before_action :find_workspace, only: [:show, :edit, :update, :destroy]
-  before_action :workspace_params, only: [:update]
-
-  def new
-    @workspace = Workspace.new
-  end
+  before_action :find_workspace, only: [:show, :update, :destroy]
+  respond_to :json
 
   def create
-    member = Member.new(role: :owner, user: current_user)
-    @workspace = Workspace.new name: params[:workspace][:name],
-                               description: params[:workspace][:description],
-                               members: [member]
-    if @workspace.valid?
-      @workspace.save!
-      member.save!
-      redirect_to workspaces_url and return
+    member = Member.new(role: "owner", user: current_user)
+    if member.valid?
+      @workspace = Workspace.new name: params[:name],
+                                 description: params[:description],
+                                 members: [member]
+      if @workspace.valid?
+        @workspace.save
+        member.save
+        render json: @workspace and return
+      else
+        render json: error(@workspace.errors), status: :bad_request
+      end
+    else
+      render json: error(@member.errors), status: :bad_request
     end
-
-    render :new
   end
 
   def show
-  end
-
-  def edit
+    render json: @workspace
   end
 
   def update
-    if @member.role == "owner"
-      if @workspace.update workspace_params
-        flash.notice = "The workspace #{@workspace.name} was updated successfully."
+    if %w(owner editor).include? @member.role
+      if @workspace.update name: params[:name],
+                           description: params[:description]
+        render json: @workspace and return
       else
-        flash.alert = "The workspace #{@workspace.name} updated failed."
+        render(json: error(@workspace.errors),
+               status: :bad_request) and return
       end
     else
-      flash.alert = "You don't have the permission to do that."
+      render(json: error("You don't have the permission to do that."),
+             status: :bad_request) and return
     end
-
-    redirect_to workspaces_url
   end
 
   def destroy
     if @member.role == "owner"
-      @workspace.destroy
-      flash.notice = "The workspace #{@workspace.name} was removed successfully."
+      @workspace.update trashed: true
+      render json: @workspace and return
     else
-      flash.alert = "You don't have the permission to do that."
+      render(json: error("You don't have the permission to do that."),
+             status: :bad_request) and return
     end
-    redirect_to workspaces_url
   end
 
   def index
@@ -62,11 +61,12 @@ class WorkspacesController < ApplicationController
 
   def find_workspace
     @member = Member.find_by(user: current_user, workspace_id: params[:id])
-    @workspace = @member.workspace
-  end
 
-  def workspace_params
-    params.require(:workspace).permit :name,
-                                      :description
+    if @member
+      @workspace = @member.workspace
+    else
+      render json: error("invalid workspace"),
+             status: :bad_request and return
+    end
   end
 end

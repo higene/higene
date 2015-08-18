@@ -9,3 +9,7 @@ jeffrey:
 hunter:
   username: hunter
   email: hunter@higene.io
+
+tom:
+  username: tom
+  email: tom@higene.io
