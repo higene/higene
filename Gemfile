@@ -39,6 +39,10 @@ gem 'bootstrap-sass', '3.3.4.1'
 # The font-awesome font bundled as an asset for the rails asset pipeline
 gem 'font-awesome-rails', '4.3.0.0'
 
+# A Redis-backed Ruby library for creating background jobs, placing them on
+# multiple queues, and processing them later
+# gem 'resque', '1.25.2'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -48,4 +52,9 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+
+  # Robe dependencies
+  gem 'pry'
+  gem 'pry-doc'
+  gem 'method_source'
 end
